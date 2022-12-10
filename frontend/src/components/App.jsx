@@ -47,21 +47,6 @@ function App() {
   const [email, setEmail] = useState('');
   const history = useHistory();
 
-  // Запрос карточек и данных профиля через API
-  useEffect(() => {
-    Promise.all([
-      api.getProfileInfo(),
-      api.getInitialCards(),
-    ])
-      .then(([userInfo, cardsData]) => {
-        setCurrentUser(userInfo);
-        setCards(cardsData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -194,37 +179,6 @@ function App() {
     setIsInfoTooltipPopupOpen(true);
   };
 
-  // Обработчик логина
-  const handleLogin = (emailUser, passwordUser) => {
-    if (!emailUser || !passwordUser) {
-      return;
-    }
-    auth.authorize(emailUser, passwordUser)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          setLoggedIn(true);
-          history.push('/');
-        }
-      })
-      .catch((err) => {
-        setMessage({
-          image: imageInfoFail,
-          text: 'Что-то пошло не так! Попробуйте ещё раз.',
-        });
-        setIsInfoTooltipPopupOpen(true);
-        console.log(err);
-      });
-  };
-
-  // Обработчик выхода
-  const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    setLoggedIn(false);
-    history.push('/sign-in');
-    setEmail('');
-  };
-
   // Обработчик регистрации
   const handleRegister = (emailUser, passwordUser) => {
     auth.register(emailUser, passwordUser)
@@ -247,17 +201,61 @@ function App() {
       });
   };
 
+  // Обработчик логина
+  const handleLogin = (emailUser, passwordUser) => {
+    // if (!emailUser || !passwordUser) {
+    //   return;
+    // }
+    auth.authorize(emailUser, passwordUser)
+      .then((data) => {
+        setLoggedIn(true);
+        localStorage.setItem('token', data.token);
+        api.setToken(data.token);
+        history.push('/');
+        // if (data.token) {
+        //   localStorage.setItem('jwt', data.token);
+        //   tokenCheck();
+        //   setLoggedIn(true);
+        //   history.push('/');
+        // }
+      })
+      .catch((err) => {
+        setMessage({
+          image: imageInfoFail,
+          text: 'Что-то пошло не так! Попробуйте ещё раз.',
+        });
+        setIsInfoTooltipPopupOpen(true);
+        console.log(err);
+      });
+  };
+
+  // Обработчик выхода
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setLoggedIn(false);
+    history.push('/sign-in');
+    setEmail('');
+  };
+
   // Проверка токена в локальном хранилище
   const tokenCheck = () => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        if (res) {
-          setEmail(res.data.email);
+    const token = localStorage.getItem('token');
+    // api.setToken(token);
+    if (token) {
+      api.setToken(token);
+      auth.checkToken(token)
+        .then((data) => {
           setLoggedIn(true);
+          setEmail(data.email);
           history.push('/');
-        }
-      })
+        })
+        // .then((res) => {
+        //   if (res) {
+        //     setEmail(res.data.email);
+        //     setLoggedIn(true);
+        //     history.push('/');
+        //   }
+        // })
         .catch((err) => {
           setLoggedIn(false);
           console.log(err);
@@ -268,6 +266,25 @@ function App() {
   // Проверка наличия токена и залогинен ли пользователь
   useEffect(() => {
     tokenCheck();
+  }, []);
+
+  // Запрос карточек и данных профиля через API
+  useEffect(() => {
+    if (loggedIn) {
+      const initialPromises = Promise.all([
+        api.getProfileInfo(),
+        api.getInitialCards(),
+      ]);
+
+      initialPromises
+        .then(([userInfo, cardsData]) => {
+          setCurrentUser(userInfo);
+          setCards(cardsData);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [loggedIn]);
 
   return (

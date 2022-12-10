@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 import { constants } from 'http2';
 import { errors } from 'celebrate';
 import { router } from './routes/index.js';
@@ -21,9 +22,18 @@ const config = dotenv.config({ path: path.resolve('.env.common') }).parsed;
 
 const app = express();
 
+app.use(cors({
+  origin: '*',
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+  ],
+}));
+
 app.set('config', config);
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(requestLogger);
 
 // подключение всех роутов

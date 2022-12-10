@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'http://localhost:3000';
+// потом заменить на api.mesto-pr15.aleksdsgn.nomoredomains.club
 
 const handleResponse = (res) => {
   if (res.ok) {
@@ -30,12 +31,12 @@ export const authorize = (email, password) => {
     .then(handleResponse);
 };
 
-export const getContent = (token) => {
+export const checkToken = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
   })
     .then(handleResponse);
