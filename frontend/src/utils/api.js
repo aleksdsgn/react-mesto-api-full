@@ -3,55 +3,60 @@ class Api {
     this._url = apiConfig.baseUrl;
     this._headers = apiConfig.headers;
     this._token = apiConfig.token;
-    this._content_type = 'application/json';
-    this._fetch = (link, method = 'GET', body = undefined) => fetch(`${this._url}/${link}`, {
-      /* eslint-disable */
-      method: method,
-      /* eslint-disable */
-      headers: {
-        authorization: `Bearer ${this._token}`,
-        'content-type': this._content_type,
-      },
-      body: JSON.stringify(body),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        // если ошибка, отклоняем промис
-        return Promise.reject(new Error(`Ошибка: ${res.status}`));
-      })
-      .then((result) => result);
   }
 
-  // установка токена
-  setToken(token) {
+  /* eslint-disable */
+  _handleResponse(res) {
+    /* eslint-disable */
+    if (res.ok) {
+      return res.json();
+    }
+    // если ошибка, отклоняем промис
+    return Promise.reject(new Error(`Ошибка: ${res.status}`));
+  }
+
+  getToken(token) {
     this._token = token;
   }
 
   // получение данных профиля с сервера
   getProfileInfo() {
-    return this._fetch('users/me');
+    return fetch(`${this._url}/users/me`, {
+      headers: this._headers,
+    }).then(this._handleResponse);
   }
 
   // сохранение отредактированных данных профиля на сервере
   updateProfileInfo(name, about) {
-    return this._fetch('users/me', 'PATCH', { name, about });
+    return fetch(`${this._url}/users/me`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({ name, about }),
+    }).then(this._handleResponse);
   }
 
   // получение карточек с сервера
   getInitialCards() {
-    return this._fetch('cards')
+    return fetch(`${this._url}/cards`, {
+      headers: this._headers,
+    }).then(this._handleResponse);
   }
 
   // создание и загрузка новой карточки на сервер
   createCard(name, link) {
-    return this._fetch('cards', 'POST', { name, link });
+    return fetch(`${this._url}/cards`, {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({ name, link }),
+    }).then(this._handleResponse);
   }
 
   // удаление карточки с сервера
   deleteCardById(id) {
-    return this._fetch('cards/${id}', 'DELETE');
+    return fetch(`${this._url}/cards/${id}`, {
+      method: 'DELETE',
+      headers: this._headers,
+    }).then(this._handleResponse);
   }
 
   // переключение лайка
@@ -64,26 +69,34 @@ class Api {
 
   // проставление лайка
   addLike(id) {
-    return fetch(`cards/${id}/likes`, 'PUT');
+    return fetch(`${this._url}/cards/${id}/likes`, {
+      method: 'PUT',
+      headers: this._headers,
+    }).then(this._handleResponse);
   }
 
   // удаление лайка
   deleteLike(id) {
-    return fetch(`cards/${id}/likes`, 'DELETE');
+    return fetch(`${this._url}/cards/${id}/likes`, {
+      method: 'DELETE',
+      headers: this._headers,
+    }).then(this._handleResponse);
   }
 
   // изменение аватара
   editAvatar(data) {
-    return this._fetch('users/me/avatar', 'PATCH', { avatar: data });
+    return fetch(`${this._url}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({ avatar: data }),
+    }).then(this._handleResponse);
   }
 }
 
 export const api = new Api({
-  // baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-48',
   baseUrl: 'http://localhost:3000',
-  // потом заменить на api.mesto-pr15.aleksdsgn.nomoredomains.club
   headers: {
-    // 'Authorization': '',
+    'Authorization': '',
     'Content-Type': 'application/json',
   },
   token: '',

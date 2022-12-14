@@ -1,5 +1,4 @@
 export const BASE_URL = 'http://localhost:3000';
-// потом заменить на api.mesto-pr15.aleksdsgn.nomoredomains.club
 
 const handleResponse = (res) => {
   if (res.ok) {
@@ -31,7 +30,7 @@ export const authorize = (email, password) => {
     .then(handleResponse);
 };
 
-export const checkToken = (token) => {
+export const getContent = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
