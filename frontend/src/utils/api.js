@@ -4,19 +4,48 @@ class Api {
     this._headers = apiConfig.headers;
     this._token = apiConfig.token;
   }
-
-  /* eslint-disable */
+/* eslint-disable */
   _handleResponse(res) {
-    /* eslint-disable */
     if (res.ok) {
       return res.json();
     }
     // если ошибка, отклоняем промис
     return Promise.reject(new Error(`Ошибка: ${res.status}`));
   }
+/* eslint-disable */
 
   getToken(token) {
     this._token = token;
+  }
+
+  register(email, password) {
+    return fetch(`${this._url}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password, email }),
+    }).then(this._handleResponse);
+  }
+
+  authorize(email, password) {
+    return fetch(`${this._url}/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    }).then(this._handleResponse);
+  }
+
+  getContent(token) {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(this._handleResponse);
   }
 
   // получение данных профиля с сервера
@@ -96,7 +125,7 @@ class Api {
 export const api = new Api({
   baseUrl: 'http://localhost:3000',
   headers: {
-    'Authorization': '',
+    Authorization: '',
     'Content-Type': 'application/json',
   },
   token: '',

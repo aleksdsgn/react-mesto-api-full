@@ -25,7 +25,7 @@ import imageInfoSuccess from '../images/info-success.svg';
 import ProtectedRoute from './ProtectedRoute';
 
 import { api } from '../utils/api';
-import * as auth from '../utils/auth';
+// import * as auth from '../utils/auth';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
@@ -50,11 +50,13 @@ function App() {
   // Запрос карточек и данных профиля через API
   useEffect(() => {
     if (loggedIn) {
+      console.log('userInfo, cardsData');
       Promise.all([
         api.getProfileInfo(),
         api.getInitialCards(),
       ])
         .then(([userInfo, cardsData]) => {
+          // console.log(userInfo);
           setCurrentUser(userInfo);
           setCards(cardsData);
         })
@@ -201,11 +203,11 @@ function App() {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       api.getToken(jwt);
-      auth.getContent(jwt)
+      api.getContent(jwt)
         .then((res) => {
-          // console.log(res);
+          console.log(res);
           if (res) {
-            setEmail(res.data.email);
+            setEmail(res.email);
             setLoggedIn(true);
             history.push('/');
           }
@@ -228,7 +230,7 @@ function App() {
     if (!emailUser || !passwordUser) {
       return;
     }
-    auth.authorize(emailUser, passwordUser)
+    api.authorize(emailUser, passwordUser)
       .then((data) => {
         console.log(data, data.token);
         if (data.token) {
@@ -258,7 +260,7 @@ function App() {
 
   // Обработчик регистрации
   const handleRegister = (emailUser, passwordUser) => {
-    auth.register(emailUser, passwordUser)
+    api.register(emailUser, passwordUser)
       .then(() => {
         setMessage({
           image: imageInfoSuccess,
