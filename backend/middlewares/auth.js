@@ -3,21 +3,14 @@ import { UnauthorizedError } from '../errors/UnauthorizedError.js';
 
 export const auth = (req, res, next) => {
   // достаём авторизационный заголовок
-  // const { authorization = '' } = req.headers;
+  const { authorization = '' } = req.headers;
 
-  // // убеждаемся, что он есть или начинается с Bearer
-  // if (!authorization) {
-  // // if (!authorization || !authorization.startsWith('Bearer ')) {
-  //   // next(new UnauthorizedError('Необходима авторизация'));
-  //   throw new UnauthorizedError('Необходима авторизация');
-  // }
-
+  // убеждаемся, что он есть или начинается с Bearer
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    next(new UnauthorizedError('Необходима авторизация'));
+  }
   // извлечём токен
-  // const token = authorization.replace(/^Bearer*\s*/i, '');
-
-  // При логине токен сохраняется в cookies,
-  // поэтому вместо заголовков можно токен извлекать из cookies
-  const token = req.cookies.jwt;
+  const token = authorization.replace(/^Bearer*\s*/i, '');
   let payload;
 
   const { JWT_SALT } = req.app.get('config');
@@ -30,7 +23,6 @@ export const auth = (req, res, next) => {
   }
   // записываем пейлоуд в объект запроса
   req.user = payload;
-
   // пропускаем запрос дальше
   next();
 };

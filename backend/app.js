@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
+// import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
@@ -32,7 +32,7 @@ app.use(cors({
 
 app.set('config', config);
 app.use(bodyParser.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.use(requestLogger);
 

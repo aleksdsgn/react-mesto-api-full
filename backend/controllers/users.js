@@ -86,13 +86,7 @@ export const login = (req, res, next) => {
       const { JWT_SALT } = req.app.get('config');
       const token = jwt.sign({ _id: user._id }, JWT_SALT, { expiresIn: '7d' });
 
-      // отправим токен, браузер сохранит его в куках
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        })
-        .send({ token });
+      res.send({ token });
     })
     .catch(() => {
       // ошибка аутентификации
