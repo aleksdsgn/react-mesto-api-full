@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 // import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import path from 'path';
+// import path from 'path';
 import cors from 'cors';
 import { constants } from 'http2';
 import { errors } from 'celebrate';
@@ -18,7 +18,11 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-const config = dotenv.config({ path: path.resolve('.env.common') }).parsed;
+const { NODE_ENV } = process.env;
+
+const config = dotenv.config({
+  path: NODE_ENV === 'production' ? '.env' : '.env.common',
+}).parsed;
 
 const app = express();
 

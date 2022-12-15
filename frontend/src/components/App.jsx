@@ -44,25 +44,44 @@ function App() {
   const [cards, setCards] = useState([]);
   const [buttonText, setButtonText] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState('');
   const history = useHistory();
+
+  // Обработчик выхода
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    history.push('/sign-in');
+  };
+
+  // Проверка токена в локальном хранилище
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      api.setToken(jwt);
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  };
 
   // Запрос карточек и данных профиля через API
   useEffect(() => {
+    tokenCheck();
     if (loggedIn) {
-      console.log('userInfo, cardsData');
       Promise.all([
         api.getProfileInfo(),
         api.getInitialCards(),
       ])
         .then(([userInfo, cardsData]) => {
-          // console.log(userInfo);
           setCurrentUser(userInfo);
-          setCards(cardsData);
+          setCards(cardsData.data);
         })
         .catch((err) => {
           console.log(err);
+          handleLogout();
         });
+    } else {
+      handleLogout();
     }
   }, [loggedIn]);
 
@@ -198,45 +217,16 @@ function App() {
     setIsInfoTooltipPopupOpen(true);
   };
 
-  // Проверка токена в локальном хранилище
-  const tokenCheck = () => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      api.getToken(jwt);
-      api.getContent(jwt)
-        .then((res) => {
-          console.log(res);
-          if (res) {
-            setEmail(res.email);
-            setLoggedIn(true);
-            history.push('/');
-          }
-        })
-        .catch((err) => {
-          setLoggedIn(false);
-          console.log(err);
-        });
-    }
-  };
-
-  // Проверка наличия токена и залогинен ли пользователь
-  useEffect(() => {
-    tokenCheck();
-  }, []);
-
   // Обработчик логина
   const handleLogin = (emailUser, passwordUser) => {
-    // console.log(emailUser, passwordUser);
     if (!emailUser || !passwordUser) {
       return;
     }
     api.authorize(emailUser, passwordUser)
       .then((data) => {
-        console.log(data, data.token);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
           tokenCheck();
-          setLoggedIn(true);
           history.push('/');
         }
       })
@@ -248,14 +238,6 @@ function App() {
         setIsInfoTooltipPopupOpen(true);
         console.log(err);
       });
-  };
-
-  // Обработчик выхода
-  const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    setLoggedIn(false);
-    history.push('/sign-in');
-    setEmail('');
   };
 
   // Обработчик регистрации
@@ -284,7 +266,7 @@ function App() {
     <div className="page">
 
       <CurrentUserContext.Provider value={currentUser}>
-        <Header handleLogout={handleLogout} email={email} />
+        <Header handleLogout={handleLogout} email={currentUser.email} />
 
         <Switch>
 

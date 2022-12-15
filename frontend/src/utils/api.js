@@ -2,7 +2,6 @@ class Api {
   constructor(apiConfig) {
     this._url = apiConfig.baseUrl;
     this._headers = apiConfig.headers;
-    this._token = apiConfig.token;
   }
 /* eslint-disable */
   _handleResponse(res) {
@@ -14,16 +13,14 @@ class Api {
   }
 /* eslint-disable */
 
-  getToken(token) {
-    this._token = token;
+  setToken(token) {
+    this._headers.Authorization = token;
   }
 
   register(email, password) {
     return fetch(`${this._url}/signup`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this._headers,
       body: JSON.stringify({ password, email }),
     }).then(this._handleResponse);
   }
@@ -31,20 +28,8 @@ class Api {
   authorize(email, password) {
     return fetch(`${this._url}/signin`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this._headers,
       body: JSON.stringify({ email, password }),
-    }).then(this._handleResponse);
-  }
-
-  getContent(token) {
-    return fetch(`${this._url}/users/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
     }).then(this._handleResponse);
   }
 
@@ -128,5 +113,4 @@ export const api = new Api({
     Authorization: '',
     'Content-Type': 'application/json',
   },
-  token: '',
 });

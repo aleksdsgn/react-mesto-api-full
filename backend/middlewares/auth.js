@@ -6,7 +6,7 @@ export const auth = (req, res, next) => {
   const { authorization = '' } = req.headers;
 
   // убеждаемся, что он есть или начинается с Bearer
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!authorization) {
     next(new UnauthorizedError('Необходима авторизация'));
   }
   // извлечём токен
