@@ -40,6 +40,13 @@ app.use(bodyParser.json());
 
 app.use(requestLogger);
 
+// Краш-тест сервера
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 // подключение всех роутов
 app.use(router);
 
