@@ -21,7 +21,7 @@ class Api {
     return fetch(`${this._url}/signup`, {
       method: 'POST',
       headers: this._headers,
-      body: JSON.stringify({ password, email }),
+      body: JSON.stringify({ email, password }),
     }).then(this._handleResponse);
   }
 
