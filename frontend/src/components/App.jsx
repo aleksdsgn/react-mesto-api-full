@@ -66,8 +66,9 @@ function App() {
 
   // Запрос карточек и данных профиля через API
   useEffect(() => {
-    tokenCheck();
-    if (loggedIn) {
+    const jwt = localStorage.getItem('jwt');
+    api.setToken(jwt);
+    if (loggedIn || jwt) {
       Promise.all([
         api.getProfileInfo(),
         api.getInitialCards(),
@@ -75,6 +76,8 @@ function App() {
         .then(([userInfo, cardsData]) => {
           setCurrentUser(userInfo);
           setCards(cardsData.data);
+          setLoggedIn(true);
+          history.push('/');
         })
         .catch((err) => {
           console.log(err);
