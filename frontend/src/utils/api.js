@@ -109,7 +109,7 @@ class Api {
 
 export const api = new Api({
   // baseUrl: 'http://localhost:3000',
-  baseUrl: 'api.mesto-pr15.aleksdsgn.nomoredomains.club',
+  baseUrl: '//api.mesto-pr15.aleksdsgn.nomoredomains.club',
   headers: {
     Authorization: '',
     'Content-Type': 'application/json',
