@@ -11,6 +11,13 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 
 export const router = Router();
 
+// Краш-тест сервера
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 // роуты, не требующие авторизации
 router.post('/signin', celebrateBodyAuth, login);
 router.post('/signup', celebrateBodyUser, register);
