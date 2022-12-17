@@ -4,7 +4,6 @@ import { User } from '../models/user.js';
 import { ServerError } from '../errors/ServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { BadRequestError } from '../errors/BadRequestError.js';
-import { UnauthorizedError } from '../errors/UnauthorizedError.js';
 import { ConflictError } from '../errors/ConflictError.js';
 
 // получить всех пользователей
@@ -88,10 +87,7 @@ export const login = (req, res, next) => {
 
       res.send({ token });
     })
-    .catch(() => {
-      // ошибка аутентификации
-      next(new UnauthorizedError('Неправильные почта или пароль'));
-    });
+    .catch(next);
 };
 
 // обновить текстовые данные пользователя
