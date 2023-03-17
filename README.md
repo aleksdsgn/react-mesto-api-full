@@ -38,3 +38,16 @@
 - Frontend https://mesto-pr15.aleksdsgn.nomoredomains.club
 - Backend https://api.mesto-pr15.aleksdsgn.nomoredomains.club
 - Репезиторий Github https://github.com/aleksdsgn/react-mesto-api-full
+
+
+---
+## Установка и запуск
+### Требования:
+Node.js >= 14; npm >= 6.14;
+#### frontend
+* `npm i` - установка зависимостей
+* `npm run start` - запуск
+#### backend
+* `npm i` - установка зависимостей
+* `npm run start` - запуск
+* `npm run dev` - запуск сервера с hot-reload
