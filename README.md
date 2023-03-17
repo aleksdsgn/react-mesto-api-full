@@ -24,6 +24,16 @@
 * Установка и снятие лайка на карточках
 * Удаление карточек только авторизованного пользователя
 
+## Стек:
+* CSS (адаптивная верстка)
+* JavaScript
+* React (Create React App, JSX, компоненты, роутер, стейты, эффекты, контекст)
+* Методология БЭМ Nested
+* Mongoose
+* MongoDB
+* Node.js
+* Express
+
 ## Ссылки:
 - Frontend https://mesto-pr15.aleksdsgn.nomoredomains.club
 - Backend https://api.mesto-pr15.aleksdsgn.nomoredomains.club
