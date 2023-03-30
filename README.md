@@ -43,11 +43,24 @@
 ---
 ## Установка и запуск
 ### Требования:
-Node.js >= 14; npm >= 6.14;
-#### frontend
+* Node.js >= 14;
+* npm >= 6.14;
+
+`git clone https://github.com/aleksdsgn/react-mesto-api-full.git` - клонирование репозитория
+
+для обращения к API по локальной сети в файле react-mesto-api-full\frontend\src\utils\api.js
+
+расскомментировать 111 строку `// baseUrl: 'http://localhost:3000',`
+
+и закомментировать 112 строку `baseUrl: '//api.mesto-pr15.aleksdsgn.nomoredomains.club',`
+
+Backend:
+* `cd .\react-mesto-api-full\backend` - вход в каталог
 * `npm i` - установка зависимостей
-* `npm run start` - запуск
-#### backend
+* `mongod` - запуск mongodDB
+* `npm run dev` - запуск develop-сборки с hot-reload
+
+Frontend:
+* `cd .\frontend` - вход в каталог
 * `npm i` - установка зависимостей
-* `npm run start` - запуск
-* `npm run dev` - запуск сервера с hot-reload
+* `npm run start` - запуск develop-сборки с hot-reload
